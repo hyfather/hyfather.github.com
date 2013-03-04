@@ -1,0 +1,307 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Bundler and RVM - My Musings</title>
+  <meta name="author" content="Nikhil Mungel">
+
+  
+  <meta name="description" content="Almost everyone I know who writes any Ruby outside of the irb REPL uses Bundler.
+And everyone I know uses RVM to manage their rubies and their gems &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://blog.hyfather.com/blog/2011/10/18/bundler/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="My Musings" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My Musings</a></h1>
+  
+    <h2>on programming, systems and learning.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:blog.hyfather.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Bundler and RVM</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-10-18T06:35:00-07:00" pubdate data-updated="true">Oct 18<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Almost everyone I know who writes any Ruby outside of the <a href="http://en.wikipedia.org/wiki/Interactive_Ruby_Shell">irb REPL</a> uses Bundler.
+And <em>everyone</em> I know uses RVM to manage their rubies and their gems locally, except for this one guy who uses <a href="https://github.com/sstephenson/rbenv">rbenv</a> (which is a great tool, more on that in another blog post).</p>
+
+<p>I have observed people use different strategies and workflows with bundler and RVM, since there is at least one overlap in what they do: manage collections of rubygems.
+Bundler calles them <em>bundles</em> and RVM calles them <em>gemsets</em>.</p>
+
+<p>Broadly, here are two patterns.</p>
+
+<h3>Pattern #1</h3>
+
+<p>When a new project is cloned or intialized, an RVM gemset is created with the project&#8217;s name.
+Then, every time one wishes to work on that project, they switch to that gemset using the .rvmrc.</p>
+
+<h3>Pattern #2</h3>
+
+<p>When cloning or initilizing a new project on the system, no gemsets are explicitly created in RVM.
+Instead, bundler is used to manage all gemmy things across the system and across projects.</p>
+
+<p><code>bundle install --path .gems</code></p>
+
+<p>This <code>--path</code> helps keeping the global RVM gem-space always empty (except for bundler.gem, rake.gem and rails.gem, to initlialize new projects.)
+This also results in one&#8217;s <code>.bundle/config</code> file to now contain the entry</p>
+
+<p><code>BUNDLE\_PATH: .gems</code></p>
+
+<p>And of course, .gems should be ignored by your SCM.</p>
+
+<p><code>echo ".gems" \&gt;\&gt; .gitignore \# if you use git.</code></p>
+
+<p><em><strong>protip:</strong> I also include .gems when I create my tagfile. This helps me to quickly jump into the gem&#8217;s codebase using my editor.</em></p>
+
+<h3>Why do I shamelessly try selling Pattern #2 to everyone I meet?</h3>
+
+<p>Bundler is closer to the project while RVM is closer to the system. I like to have my project&#8217;s gems in my project&#8217;s directory managed with a tool built for the job.</p>
+
+<p>Bundler stays with you in production.env while RVM might not, depending on the sysadmin and the situation at hand. I uniformly work on a philosophy of keeping my development as close to production with regards to the toolchain. No, I don&#8217;t run RHEL on my laptop.</p>
+
+<p>One additional step encountered is prefixing every command that needs to run in the project context by <code>bundle exec</code> (I have it aliased to <code>bx</code>).
+Which is only fair, since that is how every command would run on production.env.</p>
+
+<p>e. g. <code>bundle exec rake db:migrate</code> or <code>bx rails dbconsole</code></p>
+
+<p><em><strong>protip:</strong> Forgot to prefix <code>bx</code> to the previous command? Run <code>bx !!</code>.</em></p>
+
+<p>UPDATE: @tdinkar <a href="https://twitter.com/tdinkar/status/126517974759776256">pointed me</a> to passing the <code>--binstubs</code> flag to bundle install that gets rid of having to use <code>bundle exec</code> for every executable command to be run in the bundled context.
+Here is Yehuda&#8217;s <a href="http://yehudakatz.com/2011/05/30/gem-versioning-and-bundler-doing-it-right/">blog post</a> delving into more detail about the <code>--binstubs</code> flag and the reason for its existence.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Nikhil Mungel</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-10-18T06:35:00-07:00" pubdate data-updated="true">Oct 18<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/bash/'>bash</a>, <a class='category' href='/blog/categories/bundler/'>bundler</a>, <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/rvm/'>rvm</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://blog.hyfather.com/blog/2011/10/18/bundler/" data-via="hyfather" data-counturl="http://blog.hyfather.com/blog/2011/10/18/bundler/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/10/07/xon-and-xoff/" title="Previous Post: XON and XOFF">&laquo; XON and XOFF</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/12/17/restricted-bash/" title="Next Post: Restricted Bash">Restricted Bash &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/09/20/crafting-beautiful-command-line-applications-with-ruby/">Crafting Beautiful Command Line Applications with Ruby</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/12/17/restricted-bash/">Restricted Bash</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/18/bundler/">Bundler and RVM</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/07/xon-and-xoff/">XON and XOFF</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/09/01/devops-at-chicagoruby/">DevOps at ChicagoRuby</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("hyfather", 2, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/hyfather" class="twitter-follow-button" data-show-count="true">Follow @hyfather</a>
+  
+</section>
+
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/hyfather">@hyfather</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'hyfather',
+            count: 10,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Nikhil Mungel -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: vim | My Musings]]></title>
+  <link href="http://blog.hyfather.com/blog/categories/vim/atom.xml" rel="self"/>
+  <link href="http://blog.hyfather.com/"/>
+  <updated>2013-03-03T23:20:00-08:00</updated>
+  <id>http://blog.hyfather.com/</id>
+  <author>
+    <name><![CDATA[Nikhil Mungel]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[XON and XOFF]]></title>
+    <link href="http://blog.hyfather.com/blog/2011/10/07/xon-and-xoff/"/>
+    <updated>2011-10-07T12:39:00-07:00</updated>
+    <id>http://blog.hyfather.com/blog/2011/10/07/xon-and-xoff</id>
+    <content type="html"><![CDATA[<h3>It started with SSH sessions to the Bangalore data center freezeing up sporadically.</h3>
+
+<p>It wasn't all that sporadic, a pattern was noticed soon enough -- a
+harmless <code>C-x C-s</code> issued when inside vi.</p>
+
+<p>Unfortunately, most distros do not come bundled with emacs and I have to resort to botching up and fumbling with vi (or vim) to edit a few configurations now and then.
+Everytime I'd tweak an LXC configuration with vim and hit <code>C-x C-s</code> on the unsuspecting editor, things would freeze up. It'd refuse to respond to even the widely respected un-interceptability of the <code>^Z</code>.
+Since I use a multiplexed SSH control-master, I'd waste no time opening another SSH to the obstinate host in a different tab and mind my business.</p>
+
+<p>Till I learned about <a href="http://en.wikipedia.org/w/index.php?title=Software_flow_control&amp;oldid=442424622" title="flow control">flow control</a>.</p>
+
+<h3>What is software flow control?</h3>
+
+<p>Software Flow Control enables communication links to be started or
+stopped using the primary communication channel, which in this case
+was the ssh tunnel.
+XON and XOFF dictate the status of the data-link transmission to the
+tty <em>(X stands for transmission)</em>.</p>
+
+<p>XOFF is mapped to <code>C-s</code> by default, which causes the SSH session to not receive any signals.</p>
+
+<p>It can be promptly remedied by an XON (mapped to <code>C-q</code> by default) to resume the transmission.</p>
+
+<p>Emacs by default intercepts all <code>C-</code> sequences and hence does not exhibit this behaviour.</p>
+
+<p><strong>TL;DR</strong>
+SSH freezes up, 'hangs' or stops responding when you hit <code>C-s</code>?
+Use <code>C-q</code> to resume it.</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -5,13 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Blog Archive - My Musings</title>
+  <title>Time Saving Bash Tricks - My Musings</title>
   <meta name="author" content="Nikhil Mungel">
 
   
-  <meta name="description" content="Blog Archive 2012 Crafting Beautiful Command Line Applications with Ruby
-Sep 20 2012 posted in bash, cli, ruby 2011 Restricted Bash
-Dec 17 2011 &hellip;">
+  <meta name="description" content="This is a followup from the lightning talk 5 Time Saving Bash
+Tricks that I gave at DevOpsDays, Bangalore 2011. SSH multiplexing Adding these to ~/. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +19,7 @@ Dec 17 2011 &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://blog.hyfather.com/blog/archives/">
+  <link rel="canonical" href="http://blog.hyfather.com/blog/2011/08/26/time-saving-bash-tricks/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -65,122 +64,141 @@ Dec 17 2011 &hellip;">
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Blog Archive</h1>
+    
+      <h1 class="entry-title">Time Saving Bash Tricks</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-26T20:22:00-07:00" pubdate data-updated="true">Aug 26<span>th</span>, 2011</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives">
 
 
+<div class="entry-content"><p>This is a followup from the lightning talk <strong>5 Time Saving Bash
+Tricks</strong> that I gave at DevOpsDays, Bangalore 2011.</p>
 
-  
-  <h2>2012</h2>
+<h3>SSH multiplexing</h3>
 
-<article>
-  
-<h1><a href="/blog/2012/09/20/crafting-beautiful-command-line-applications-with-ruby/">Crafting Beautiful Command Line Applications with Ruby</a></h1>
-<time datetime="2012-09-20T12:47:00-07:00" pubdate><span class='month'>Sep</span> <span class='day'>20</span> <span class='year'>2012</span></time>
+<p>Adding these to <code>~/.ssh/config</code> or <code>/etc/ssh_config</code> will allow you to
+multiplex one SSH connection to open multiple terminals, multiple
+<code>scp</code> and <code>git push</code> without having to authenticate over keys or passwords.</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/bash/'>bash</a>, <a class='category' href='/blog/categories/cli/'>cli</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a></span>
-</footer>
+<pre><code>Host \*
+ControlMaster auto
+ControlPath /tmp/%r0%h:%p
+</code></pre>
 
+<h3>Ensuring Bash Hisory across multiple sessions</h3>
 
-</article>
+<p>Add this to <code>~/.bashrc</code></p>
 
+<pre><code>shopt -s histappend
+</code></pre>
 
+<h3>The rabbit hole of directories</h3>
 
-  
-  <h2>2011</h2>
+<p>Remember to use <code>pushd</code> and <code>popd</code> when in deeply working with many
+directories.</p>
 
-<article>
-  
-<h1><a href="/blog/2011/12/17/restricted-bash/">Restricted Bash</a></h1>
-<time datetime="2011-12-17T09:52:00-08:00" pubdate><span class='month'>Dec</span> <span class='day'>17</span> <span class='year'>2011</span></time>
+<pre><code>grizzly:~$ pushd /var/log/apache2/
+/var/log/apache2 ~
+grizzly:apache2$ # do something
+grizzly:apache2$ pushd /etc
+/etc /var/log/apache2 ~
+grizzly:etc$ # do something else
+grizzly:etc$ popd
+/var/log/apache2 ~
+grizzly:apache2$ popd
+~
+grizzly:~$
+</code></pre>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/bash/'>bash</a>, <a class='category' href='/blog/categories/shell/'>shell</a>, <a class='category' href='/blog/categories/ssh/'>ssh</a></span>
-</footer>
+<p>In fact, you can effectively use <code>pushd</code> instead of <code>cd</code>.</p>
 
+<h3>Background tail processes to share STDOUT and STDERR with any REPL</h3>
 
-</article>
+<pre><code>tail -f httpd.log &amp;
+</code></pre>
 
+<p>Then start the REPL, or continue working on the shell (which is also a
+REPL).</p>
 
+<h3>And finally, some copypasta on the Shell</h3>
 
-<article>
-  
-<h1><a href="/blog/2011/10/18/bundler/">Bundler and RVM</a></h1>
-<time datetime="2011-10-18T06:35:00-07:00" pubdate><span class='month'>Oct</span> <span class='day'>18</span> <span class='year'>2011</span></time>
+<p><em>Note that these work with the emacs-readline, which is the default
+ configuration in most distributions (including OS X).</em></p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/bash/'>bash</a>, <a class='category' href='/blog/categories/bundler/'>bundler</a>, <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/rvm/'>rvm</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2011/10/07/xon-and-xoff/">XON and XOFF</a></h1>
-<time datetime="2011-10-07T12:39:00-07:00" pubdate><span class='month'>Oct</span> <span class='day'>07</span> <span class='year'>2011</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/bash/'>bash</a>, <a class='category' href='/blog/categories/emacs/'>emacs</a>, <a class='category' href='/blog/categories/signals/'>signals</a>, <a class='category' href='/blog/categories/ssh/'>ssh</a>, <a class='category' href='/blog/categories/vi/'>vi</a>, <a class='category' href='/blog/categories/vim/'>vim</a></span>
-</footer>
+<script src="https://gist.github.com/hyfather/1311323.js"></script>
 
 
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2011/09/01/devops-at-chicagoruby/">DevOps at ChicagoRuby</a></h1>
-<time datetime="2011-09-01T01:41:00-07:00" pubdate><span class='month'>Sep</span> <span class='day'>01</span> <span class='year'>2011</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/devops/'>devops</a>, <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2011/08/28/deployment-patterns-in-the-ruby-on-rails-world/">Deployment Patterns in the Ruby on Rails World</a></h1>
-<time datetime="2011-08-28T23:45:00-07:00" pubdate><span class='month'>Aug</span> <span class='day'>28</span> <span class='year'>2011</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/devops/'>devops</a>, <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2011/08/26/time-saving-bash-tricks/">Time Saving Bash Tricks</a></h1>
-<time datetime="2011-08-26T20:22:00-07:00" pubdate><span class='month'>Aug</span> <span class='day'>26</span> <span class='year'>2011</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/bash/'>bash</a>, <a class='category' href='/blog/categories/cli/'>cli</a>, <a class='category' href='/blog/categories/ssh/'>ssh</a></span>
-</footer>
-
-
-</article>
 
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Nikhil Mungel</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-26T20:22:00-07:00" pubdate data-updated="true">Aug 26<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/bash/'>bash</a>, <a class='category' href='/blog/categories/cli/'>cli</a>, <a class='category' href='/blog/categories/ssh/'>ssh</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://blog.hyfather.com/blog/2011/08/26/time-saving-bash-tricks/" data-via="hyfather" data-counturl="http://blog.hyfather.com/blog/2011/08/26/time-saving-bash-tricks/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/08/28/deployment-patterns-in-the-ruby-on-rails-world/" title="Next Post: Deployment Patterns in the Ruby on Rails World">Deployment Patterns in the Ruby on Rails World &raquo;</a>
+      
+    </p>
+  </footer>
 </article>
 
 </div>

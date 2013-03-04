@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ssh | My Musings]]></title>
+  <link href="http://blog.hyfather.com/blog/categories/ssh/atom.xml" rel="self"/>
+  <link href="http://blog.hyfather.com/"/>
+  <updated>2013-03-03T23:20:00-08:00</updated>
+  <id>http://blog.hyfather.com/</id>
+  <author>
+    <name><![CDATA[Nikhil Mungel]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Restricted Bash]]></title>
+    <link href="http://blog.hyfather.com/blog/2011/12/17/restricted-bash/"/>
+    <updated>2011-12-17T09:52:00-08:00</updated>
+    <id>http://blog.hyfather.com/blog/2011/12/17/restricted-bash</id>
+    <content type="html"><![CDATA[<p>While working on deploying a web-application recently, I needed to transfer a 'build artifact' (fancy name for a <code>.tgz</code>) from a Continuous Integration server to an RPM repository server.</p>
+
+<p>We already have an existing RPM repository server that uses Apache, and once my tarball was in the correct location, it would be available over HTTP for all to consume.</p>
+
+<p>Cutting to the chase -- <em>What is the simplest way by which I could automatically transfer a ~20 MiB file from one CentOS host to another?</em>
+ I didn't want to install an FTP server or any extra Apache module on the existing RPM host that would then support multi-part file uploads.</p>
+
+<p>The quickest solution, it seemed was an <code>scp</code> or an <code>rsync</code>.</p>
+
+<p>So, how would this CI host be authorized to open an SSH tunnel to the web-server?
+ Where would the identity key reside? There is no elaborate keyserver in this ecosystem.</p>
+
+<p>I decided to the transfer the responsibility of protecting the system from the identity key to the remote host's operating system.</p>
+
+<p>A new user called <em>tarballs</em> on the RPM repository host with its <code>HOME</code> set to <code>/var/www/html/tarballs</code>, and set its <code>SHELL</code> to <code>rbash</code>.</p>
+
+<h3>What is rbash?</h3>
+
+<p>When the bash is started with the name rbash (<code>ln -s /bin/bash /bin/rbash</code>) or by invoking bash like this: <code>bash -r</code>, it starts up in a restricted way, which is handy while setting up more controlled environments. I know of it thanks to Saurabh 'Rob' Mookherjee, a sysadmin whom I work with.
+ When in bash's restricted mode, one cannot change directories, use commands with a <code>/</code> in them, neither can one change the <code>PATH</code> or the <code>SHELL</code> variables. A more comprehensive list of contraints can be found in the manpage for bash.</p>
+
+<p>So, all is good except the <em>tarballs</em> user still has access to all executables that exist in its <code>PATH</code> that the system assigns by default.
+ A quick hack in the <code>/etc/profile.d</code> to unset the <code>PATH</code> for the <em>tarballs</em> user and there is hardly anything the <em>tarballs</em> user can do once logged in.
+ The only required executble binary was <code>/usr/bin/ln</code> to make a symlink called 'latest' to the most recent tarball that was SCP'ed over.
+ I copied this binary to <em>tarballs'</em> <code>HOME</code>. A kludge, I admit.</p>
+
+<p>Now, from my Continuous Integration agent, I can script these two commands to be run everytime a new build artifact is to be uploaded to the repository.</p>
+
+<pre><code>scp -v -i tarball_identity tmp/build7f3cd88.tar.gz tarballs@repo.host.com:  
+ssh -v -i tarball_identity tarballs@repo.host.com "ln -sf build7f3cd88.tar.gz latest"
+</code></pre>
+
+<p>For reference, here is what I have on the repository host:</p>
+
+<pre><code>[root@repo.host.com ~]# cat /etc/profile.d/tarballs.sh 
+if [ `whoami` = 'tarballs' ]; then unset PATH; fi
+</code></pre>
+
+<p>In larger, more complicated systems that support different products and web-apps, I have seen the occasional file that is rsync'ed to another host, or a larger script residing remotely being invoked over SSH. While such things usually happen inside of a VPN or a DMZ, it is still a risky proposition to have an identity file being checked into the codebase or lying on an arbitrary host.
+ While having a more robust security solution should certainly be on the list, creating a separate user on the remote host that has only enough privileges to perform a said task is a great idea.
+ Once such a user exists, we have effectively moved that responsibility from the SSH identity keyfile to the remote host's operating system.</p>
+
+<p><em>Bear in mind that this infrastructure lies in a secure corporate datacenter with access to the machines restricted to trusted co-workers. Also, while the RPM repository host is important, all the data it holds can be easily mirrored and reproduced.
+ Solely relying on an <code>rbash</code> is by no means a solution for any mission-critical host that is directly exposed to the internet or any untrusted zone.</em></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[XON and XOFF]]></title>
+    <link href="http://blog.hyfather.com/blog/2011/10/07/xon-and-xoff/"/>
+    <updated>2011-10-07T12:39:00-07:00</updated>
+    <id>http://blog.hyfather.com/blog/2011/10/07/xon-and-xoff</id>
+    <content type="html"><![CDATA[<h3>It started with SSH sessions to the Bangalore data center freezeing up sporadically.</h3>
+
+<p>It wasn't all that sporadic, a pattern was noticed soon enough -- a
+harmless <code>C-x C-s</code> issued when inside vi.</p>
+
+<p>Unfortunately, most distros do not come bundled with emacs and I have to resort to botching up and fumbling with vi (or vim) to edit a few configurations now and then.
+Everytime I'd tweak an LXC configuration with vim and hit <code>C-x C-s</code> on the unsuspecting editor, things would freeze up. It'd refuse to respond to even the widely respected un-interceptability of the <code>^Z</code>.
+Since I use a multiplexed SSH control-master, I'd waste no time opening another SSH to the obstinate host in a different tab and mind my business.</p>
+
+<p>Till I learned about <a href="http://en.wikipedia.org/w/index.php?title=Software_flow_control&amp;oldid=442424622" title="flow control">flow control</a>.</p>
+
+<h3>What is software flow control?</h3>
+
+<p>Software Flow Control enables communication links to be started or
+stopped using the primary communication channel, which in this case
+was the ssh tunnel.
+XON and XOFF dictate the status of the data-link transmission to the
+tty <em>(X stands for transmission)</em>.</p>
+
+<p>XOFF is mapped to <code>C-s</code> by default, which causes the SSH session to not receive any signals.</p>
+
+<p>It can be promptly remedied by an XON (mapped to <code>C-q</code> by default) to resume the transmission.</p>
+
+<p>Emacs by default intercepts all <code>C-</code> sequences and hence does not exhibit this behaviour.</p>
+
+<p><strong>TL;DR</strong>
+SSH freezes up, 'hangs' or stops responding when you hit <code>C-s</code>?
+Use <code>C-q</code> to resume it.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Time Saving Bash Tricks]]></title>
+    <link href="http://blog.hyfather.com/blog/2011/08/26/time-saving-bash-tricks/"/>
+    <updated>2011-08-26T20:22:00-07:00</updated>
+    <id>http://blog.hyfather.com/blog/2011/08/26/time-saving-bash-tricks</id>
+    <content type="html"><![CDATA[<p>This is a followup from the lightning talk <strong>5 Time Saving Bash
+Tricks</strong> that I gave at DevOpsDays, Bangalore 2011.</p>
+
+<h3>SSH multiplexing</h3>
+
+<p>Adding these to <code>~/.ssh/config</code> or <code>/etc/ssh_config</code> will allow you to
+multiplex one SSH connection to open multiple terminals, multiple
+<code>scp</code> and <code>git push</code> without having to authenticate over keys or passwords.</p>
+
+<pre><code>Host \*
+ControlMaster auto
+ControlPath /tmp/%r0%h:%p
+</code></pre>
+
+<h3>Ensuring Bash Hisory across multiple sessions</h3>
+
+<p>Add this to <code>~/.bashrc</code></p>
+
+<pre><code>shopt -s histappend
+</code></pre>
+
+<h3>The rabbit hole of directories</h3>
+
+<p>Remember to use <code>pushd</code> and <code>popd</code> when in deeply working with many
+directories.</p>
+
+<pre><code>grizzly:~$ pushd /var/log/apache2/
+/var/log/apache2 ~
+grizzly:apache2$ # do something
+grizzly:apache2$ pushd /etc
+/etc /var/log/apache2 ~
+grizzly:etc$ # do something else
+grizzly:etc$ popd
+/var/log/apache2 ~
+grizzly:apache2$ popd
+~
+grizzly:~$
+</code></pre>
+
+<p>In fact, you can effectively use <code>pushd</code> instead of <code>cd</code>.</p>
+
+<h3>Background tail processes to share STDOUT and STDERR with any REPL</h3>
+
+<pre><code>tail -f httpd.log &amp;
+</code></pre>
+
+<p>Then start the REPL, or continue working on the shell (which is also a
+REPL).</p>
+
+<h3>And finally, some copypasta on the Shell</h3>
+
+<p><em>Note that these work with the emacs-readline, which is the default
+ configuration in most distributions (including OS X).</em></p>
+
+<script src="https://gist.github.com/hyfather/1311323.js"></script>
+
+
+
+]]></content>
+  </entry>
+  
+</feed>

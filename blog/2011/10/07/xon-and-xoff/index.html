@@ -5,13 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Blog Archive - My Musings</title>
+  <title>XON and XOFF - My Musings</title>
   <meta name="author" content="Nikhil Mungel">
 
   
-  <meta name="description" content="Blog Archive 2012 Crafting Beautiful Command Line Applications with Ruby
-Sep 20 2012 posted in bash, cli, ruby 2011 Restricted Bash
-Dec 17 2011 &hellip;">
+  <meta name="description" content="It started with SSH sessions to the Bangalore data center freezeing up sporadically. It wasn&#8217;t all that sporadic, a pattern was noticed soon &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +18,7 @@ Dec 17 2011 &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://blog.hyfather.com/blog/archives/">
+  <link rel="canonical" href="http://blog.hyfather.com/blog/2011/10/07/xon-and-xoff/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -65,122 +63,113 @@ Dec 17 2011 &hellip;">
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Blog Archive</h1>
+    
+      <h1 class="entry-title">XON and XOFF</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-10-07T12:39:00-07:00" pubdate data-updated="true">Oct 7<span>th</span>, 2011</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives">
 
 
+<div class="entry-content"><h3>It started with SSH sessions to the Bangalore data center freezeing up sporadically.</h3>
 
-  
-  <h2>2012</h2>
+<p>It wasn&#8217;t all that sporadic, a pattern was noticed soon enough &#8211; a
+harmless <code>C-x C-s</code> issued when inside vi.</p>
 
-<article>
-  
-<h1><a href="/blog/2012/09/20/crafting-beautiful-command-line-applications-with-ruby/">Crafting Beautiful Command Line Applications with Ruby</a></h1>
-<time datetime="2012-09-20T12:47:00-07:00" pubdate><span class='month'>Sep</span> <span class='day'>20</span> <span class='year'>2012</span></time>
+<p>Unfortunately, most distros do not come bundled with emacs and I have to resort to botching up and fumbling with vi (or vim) to edit a few configurations now and then.
+Everytime I&#8217;d tweak an LXC configuration with vim and hit <code>C-x C-s</code> on the unsuspecting editor, things would freeze up. It&#8217;d refuse to respond to even the widely respected un-interceptability of the <code>^Z</code>.
+Since I use a multiplexed SSH control-master, I&#8217;d waste no time opening another SSH to the obstinate host in a different tab and mind my business.</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/bash/'>bash</a>, <a class='category' href='/blog/categories/cli/'>cli</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a></span>
-</footer>
+<p>Till I learned about <a href="http://en.wikipedia.org/w/index.php?title=Software_flow_control&amp;oldid=442424622" title="flow control">flow control</a>.</p>
 
+<h3>What is software flow control?</h3>
 
-</article>
+<p>Software Flow Control enables communication links to be started or
+stopped using the primary communication channel, which in this case
+was the ssh tunnel.
+XON and XOFF dictate the status of the data-link transmission to the
+tty <em>(X stands for transmission)</em>.</p>
 
+<p>XOFF is mapped to <code>C-s</code> by default, which causes the SSH session to not receive any signals.</p>
 
+<p>It can be promptly remedied by an XON (mapped to <code>C-q</code> by default) to resume the transmission.</p>
 
-  
-  <h2>2011</h2>
+<p>Emacs by default intercepts all <code>C-</code> sequences and hence does not exhibit this behaviour.</p>
 
-<article>
-  
-<h1><a href="/blog/2011/12/17/restricted-bash/">Restricted Bash</a></h1>
-<time datetime="2011-12-17T09:52:00-08:00" pubdate><span class='month'>Dec</span> <span class='day'>17</span> <span class='year'>2011</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/bash/'>bash</a>, <a class='category' href='/blog/categories/shell/'>shell</a>, <a class='category' href='/blog/categories/ssh/'>ssh</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2011/10/18/bundler/">Bundler and RVM</a></h1>
-<time datetime="2011-10-18T06:35:00-07:00" pubdate><span class='month'>Oct</span> <span class='day'>18</span> <span class='year'>2011</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/bash/'>bash</a>, <a class='category' href='/blog/categories/bundler/'>bundler</a>, <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/rvm/'>rvm</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2011/10/07/xon-and-xoff/">XON and XOFF</a></h1>
-<time datetime="2011-10-07T12:39:00-07:00" pubdate><span class='month'>Oct</span> <span class='day'>07</span> <span class='year'>2011</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/bash/'>bash</a>, <a class='category' href='/blog/categories/emacs/'>emacs</a>, <a class='category' href='/blog/categories/signals/'>signals</a>, <a class='category' href='/blog/categories/ssh/'>ssh</a>, <a class='category' href='/blog/categories/vi/'>vi</a>, <a class='category' href='/blog/categories/vim/'>vim</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2011/09/01/devops-at-chicagoruby/">DevOps at ChicagoRuby</a></h1>
-<time datetime="2011-09-01T01:41:00-07:00" pubdate><span class='month'>Sep</span> <span class='day'>01</span> <span class='year'>2011</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/devops/'>devops</a>, <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2011/08/28/deployment-patterns-in-the-ruby-on-rails-world/">Deployment Patterns in the Ruby on Rails World</a></h1>
-<time datetime="2011-08-28T23:45:00-07:00" pubdate><span class='month'>Aug</span> <span class='day'>28</span> <span class='year'>2011</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/devops/'>devops</a>, <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2011/08/26/time-saving-bash-tricks/">Time Saving Bash Tricks</a></h1>
-<time datetime="2011-08-26T20:22:00-07:00" pubdate><span class='month'>Aug</span> <span class='day'>26</span> <span class='year'>2011</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/bash/'>bash</a>, <a class='category' href='/blog/categories/cli/'>cli</a>, <a class='category' href='/blog/categories/ssh/'>ssh</a></span>
-</footer>
-
-
-</article>
-
+<p><strong>TL;DR</strong>
+SSH freezes up, &#8216;hangs&#8217; or stops responding when you hit <code>C-s</code>?
+Use <code>C-q</code> to resume it.</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Nikhil Mungel</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-10-07T12:39:00-07:00" pubdate data-updated="true">Oct 7<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/bash/'>bash</a>, <a class='category' href='/blog/categories/emacs/'>emacs</a>, <a class='category' href='/blog/categories/signals/'>signals</a>, <a class='category' href='/blog/categories/ssh/'>ssh</a>, <a class='category' href='/blog/categories/vi/'>vi</a>, <a class='category' href='/blog/categories/vim/'>vim</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://blog.hyfather.com/blog/2011/10/07/xon-and-xoff/" data-via="hyfather" data-counturl="http://blog.hyfather.com/blog/2011/10/07/xon-and-xoff/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/09/01/devops-at-chicagoruby/" title="Previous Post: DevOps at ChicagoRuby">&laquo; DevOps at ChicagoRuby</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/10/18/bundler/" title="Next Post: Bundler and RVM">Bundler and RVM &raquo;</a>
+      
+    </p>
+  </footer>
 </article>
 
 </div>

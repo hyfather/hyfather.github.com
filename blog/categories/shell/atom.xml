@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: shell | My Musings]]></title>
+  <link href="http://blog.hyfather.com/blog/categories/shell/atom.xml" rel="self"/>
+  <link href="http://blog.hyfather.com/"/>
+  <updated>2013-03-03T23:20:00-08:00</updated>
+  <id>http://blog.hyfather.com/</id>
+  <author>
+    <name><![CDATA[Nikhil Mungel]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Restricted Bash]]></title>
+    <link href="http://blog.hyfather.com/blog/2011/12/17/restricted-bash/"/>
+    <updated>2011-12-17T09:52:00-08:00</updated>
+    <id>http://blog.hyfather.com/blog/2011/12/17/restricted-bash</id>
+    <content type="html"><![CDATA[<p>While working on deploying a web-application recently, I needed to transfer a 'build artifact' (fancy name for a <code>.tgz</code>) from a Continuous Integration server to an RPM repository server.</p>
+
+<p>We already have an existing RPM repository server that uses Apache, and once my tarball was in the correct location, it would be available over HTTP for all to consume.</p>
+
+<p>Cutting to the chase -- <em>What is the simplest way by which I could automatically transfer a ~20 MiB file from one CentOS host to another?</em>
+ I didn't want to install an FTP server or any extra Apache module on the existing RPM host that would then support multi-part file uploads.</p>
+
+<p>The quickest solution, it seemed was an <code>scp</code> or an <code>rsync</code>.</p>
+
+<p>So, how would this CI host be authorized to open an SSH tunnel to the web-server?
+ Where would the identity key reside? There is no elaborate keyserver in this ecosystem.</p>
+
+<p>I decided to the transfer the responsibility of protecting the system from the identity key to the remote host's operating system.</p>
+
+<p>A new user called <em>tarballs</em> on the RPM repository host with its <code>HOME</code> set to <code>/var/www/html/tarballs</code>, and set its <code>SHELL</code> to <code>rbash</code>.</p>
+
+<h3>What is rbash?</h3>
+
+<p>When the bash is started with the name rbash (<code>ln -s /bin/bash /bin/rbash</code>) or by invoking bash like this: <code>bash -r</code>, it starts up in a restricted way, which is handy while setting up more controlled environments. I know of it thanks to Saurabh 'Rob' Mookherjee, a sysadmin whom I work with.
+ When in bash's restricted mode, one cannot change directories, use commands with a <code>/</code> in them, neither can one change the <code>PATH</code> or the <code>SHELL</code> variables. A more comprehensive list of contraints can be found in the manpage for bash.</p>
+
+<p>So, all is good except the <em>tarballs</em> user still has access to all executables that exist in its <code>PATH</code> that the system assigns by default.
+ A quick hack in the <code>/etc/profile.d</code> to unset the <code>PATH</code> for the <em>tarballs</em> user and there is hardly anything the <em>tarballs</em> user can do once logged in.
+ The only required executble binary was <code>/usr/bin/ln</code> to make a symlink called 'latest' to the most recent tarball that was SCP'ed over.
+ I copied this binary to <em>tarballs'</em> <code>HOME</code>. A kludge, I admit.</p>
+
+<p>Now, from my Continuous Integration agent, I can script these two commands to be run everytime a new build artifact is to be uploaded to the repository.</p>
+
+<pre><code>scp -v -i tarball_identity tmp/build7f3cd88.tar.gz tarballs@repo.host.com:  
+ssh -v -i tarball_identity tarballs@repo.host.com "ln -sf build7f3cd88.tar.gz latest"
+</code></pre>
+
+<p>For reference, here is what I have on the repository host:</p>
+
+<pre><code>[root@repo.host.com ~]# cat /etc/profile.d/tarballs.sh 
+if [ `whoami` = 'tarballs' ]; then unset PATH; fi
+</code></pre>
+
+<p>In larger, more complicated systems that support different products and web-apps, I have seen the occasional file that is rsync'ed to another host, or a larger script residing remotely being invoked over SSH. While such things usually happen inside of a VPN or a DMZ, it is still a risky proposition to have an identity file being checked into the codebase or lying on an arbitrary host.
+ While having a more robust security solution should certainly be on the list, creating a separate user on the remote host that has only enough privileges to perform a said task is a great idea.
+ Once such a user exists, we have effectively moved that responsibility from the SSH identity keyfile to the remote host's operating system.</p>
+
+<p><em>Bear in mind that this infrastructure lies in a secure corporate datacenter with access to the machines restricted to trusted co-workers. Also, while the RPM repository host is important, all the data it holds can be easily mirrored and reproduced.
+ Solely relying on an <code>rbash</code> is by no means a solution for any mission-critical host that is directly exposed to the internet or any untrusted zone.</em></p>
+]]></content>
+  </entry>
+  
+</feed>

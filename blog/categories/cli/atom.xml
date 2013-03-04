@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: cli | My Musings]]></title>
+  <link href="http://blog.hyfather.com/blog/categories/cli/atom.xml" rel="self"/>
+  <link href="http://blog.hyfather.com/"/>
+  <updated>2013-03-03T23:20:00-08:00</updated>
+  <id>http://blog.hyfather.com/</id>
+  <author>
+    <name><![CDATA[Nikhil Mungel]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Crafting Beautiful Command Line Applications with Ruby]]></title>
+    <link href="http://blog.hyfather.com/blog/2012/09/20/crafting-beautiful-command-line-applications-with-ruby/"/>
+    <updated>2012-09-20T12:47:00-07:00</updated>
+    <id>http://blog.hyfather.com/blog/2012/09/20/crafting-beautiful-command-line-applications-with-ruby</id>
+    <content type="html"><![CDATA[<p>Earlier this year, <a href="http://twitter.com/shishirdas" title="@shishirdas">Shishir Das</a> and I presented at RubyConf India 2012 on how to go
+about crafting beautiful, utilitarian and functioning command line
+applications using Ruby.</p>
+
+<p>And then this week, I got a chance to speak about the same topic at
+the Ruby Lightning Talk series organized by the great folks at
+<a href="http://www.apartmentlist.com/">ApartmentList</a> and
+<a href="http://thoughtbot.com/">Thoughtbot</a> in the heart of SoMa in San
+Francisco. I condensed the
+<a href="http://slidesha.re/rubycli" title="View the slideshow at slideshare.net">full-format presentation</a>
+from earlier this year into this crisp 10 minute talk that I've embedded here --</p>
+
+<iframe src="http://www.slideshare.net/slideshow/embed_code/14362934"
+width="427" height="356" frameborder="0" marginwidth="0"
+marginheight="0" scrolling="no" style="border:1px solid
+#CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen
+webkitallowfullscreen mozallowfullscreen> </iframe>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Time Saving Bash Tricks]]></title>
+    <link href="http://blog.hyfather.com/blog/2011/08/26/time-saving-bash-tricks/"/>
+    <updated>2011-08-26T20:22:00-07:00</updated>
+    <id>http://blog.hyfather.com/blog/2011/08/26/time-saving-bash-tricks</id>
+    <content type="html"><![CDATA[<p>This is a followup from the lightning talk <strong>5 Time Saving Bash
+Tricks</strong> that I gave at DevOpsDays, Bangalore 2011.</p>
+
+<h3>SSH multiplexing</h3>
+
+<p>Adding these to <code>~/.ssh/config</code> or <code>/etc/ssh_config</code> will allow you to
+multiplex one SSH connection to open multiple terminals, multiple
+<code>scp</code> and <code>git push</code> without having to authenticate over keys or passwords.</p>
+
+<pre><code>Host \*
+ControlMaster auto
+ControlPath /tmp/%r0%h:%p
+</code></pre>
+
+<h3>Ensuring Bash Hisory across multiple sessions</h3>
+
+<p>Add this to <code>~/.bashrc</code></p>
+
+<pre><code>shopt -s histappend
+</code></pre>
+
+<h3>The rabbit hole of directories</h3>
+
+<p>Remember to use <code>pushd</code> and <code>popd</code> when in deeply working with many
+directories.</p>
+
+<pre><code>grizzly:~$ pushd /var/log/apache2/
+/var/log/apache2 ~
+grizzly:apache2$ # do something
+grizzly:apache2$ pushd /etc
+/etc /var/log/apache2 ~
+grizzly:etc$ # do something else
+grizzly:etc$ popd
+/var/log/apache2 ~
+grizzly:apache2$ popd
+~
+grizzly:~$
+</code></pre>
+
+<p>In fact, you can effectively use <code>pushd</code> instead of <code>cd</code>.</p>
+
+<h3>Background tail processes to share STDOUT and STDERR with any REPL</h3>
+
+<pre><code>tail -f httpd.log &amp;
+</code></pre>
+
+<p>Then start the REPL, or continue working on the shell (which is also a
+REPL).</p>
+
+<h3>And finally, some copypasta on the Shell</h3>
+
+<p><em>Note that these work with the emacs-readline, which is the default
+ configuration in most distributions (including OS X).</em></p>
+
+<script src="https://gist.github.com/hyfather/1311323.js"></script>
+
+
+
+]]></content>
+  </entry>
+  
+</feed>
