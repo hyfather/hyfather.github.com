@@ -1,15 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://hyfather.github.com/blog/archives/</loc>
+        <loc>http://blog.hyfather.com/blog/archives/</loc>
         <lastmod>2013-03-03T22:32:27-08:00</lastmod>
     </url>
     <url>
-        <loc>http://hyfather.github.com/</loc>
+        <loc>http://blog.hyfather.com/</loc>
         <lastmod>2013-03-03T22:32:27-08:00</lastmod>
     </url>
     <url>
-        <loc>http://hyfather.github.com/robots.txt</loc>
+        <loc>http://blog.hyfather.com/robots.txt</loc>
         <lastmod>2013-03-03T22:32:27-08:00</lastmod>
     </url>
 </urlset>

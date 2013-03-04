@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://hyfather.github.com/sitemap.xml 
+Sitemap: http://blog.hyfather.com/sitemap.xml 
