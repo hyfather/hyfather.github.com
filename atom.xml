@@ -4,7 +4,7 @@
   <title><![CDATA[My Musings]]></title>
   <link href="http://blog.hyfather.com/atom.xml" rel="self"/>
   <link href="http://blog.hyfather.com/"/>
-  <updated>2013-03-06T23:51:12-08:00</updated>
+  <updated>2013-03-08T01:42:45-08:00</updated>
   <id>http://blog.hyfather.com/</id>
   <author>
     <name><![CDATA[Nikhil Mungel]]></name>
@@ -14,23 +14,26 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Reading ifconfig]]></title>
+    <title type="html"><![CDATA[The Missing Man Page for ifconfig]]></title>
     <link href="http://blog.hyfather.com/blog/2013/03/04/ifconfig/"/>
     <updated>2013-03-04T00:28:00-08:00</updated>
     <id>http://blog.hyfather.com/blog/2013/03/04/ifconfig</id>
-    <content type="html"><![CDATA[<hr />
+    <content type="html"><![CDATA[<p><code>ifconfig</code> is a systems administration utility for UNIX-like systems
+that allows for diagnosing and configuring network
+interfaces. Although some claim that it is being replaced with <code>iproute2</code> (or simply the <code>ip</code> command), I
+have seen it being used abundantly.<br/>
+Using <code>ifconfig</code> to bring up interfaces, turn them off, and configure
+the protocols and identifiers they use is well documented in the man
+pages.<br/>
+But <code>ifconfig</code> also prints out a wealth of information if invoked
+without any parameters and options. I simply could not find the
+definitions of most of these things in the man pages and what follows
+is my attempt at documenting these exhaustively.</p>
 
-<h2>This post is still a draft</h2>
-
-<hr />
-
-<p><code>ifconfig</code> is a systems administration utility for UNIX-like systems
-that has been around for about three decades. Although it is being gradually
-replaced with <code>iproute2</code> or simply the <code>ip</code> command as it is known, I
-have still seen it being used abundantly.</p>
-
-<p>I have tried to detail all the the information that GNU <code>ifconfig</code> prints
-out in its most basic invocation, without any flags.</p>
+<p>This is what we see when we invoke GNU <code>ifconfig</code> on a virtual host running
+Ubuntu. Note the absence of a wifi interface, as is the case with most
+servers.<br/>
+<em>The sections are written so that they can be read independently of one another.</em></p>
 
 <pre><code>$ ifconfig
 eth0      Link encap:Ethernet  HWaddr 08:00:27:0c:49:47  
@@ -53,32 +56,53 @@ lo        Link encap:Local Loopback
           RX bytes:720 (720.0 B)  TX bytes:720 (720.0 B)
 </code></pre>
 
-<p>Let&#8217;s go over each section of what <code>ifconfig</code> has printed.</p>
+<hr />
 
 <h2>Ethernet</h2>
 
 <pre><code>eth0      Link encap:Ethernet  HWaddr 08:00:27:0c:49:47  
 </code></pre>
 
-<p><code>Link encap:Ethernet</code> means IP Datagrams leaving this interface will be wrapped in an Ethernet
- Frame.</p>
+<p> Application data is progressively encapsulated as it descends through
+ the layers of the TCP/IP Stack. <code>Link encap:Ethernet</code> means that IP
+ Datagrams coming from the Internet layer will be wrapped in an Ethernet
+ Frame before leaving this interface.</p>
 
 <p><code>HWaddr 08:00:27:0c:49:47</code> is the 48 bit Media Access Control (MAC) address. It uniquely
  identifies this network interface on the hardware layer. This address
- will be sent in ARP reponse packets when other devices want to send
- Ethernet Frames to this host.</p>
+ will be sent in ARP (Address Resolution Protocol) reponse packets when other devices want to send
+ Ethernet Frames to this interface.</p>
 
 <h3>The IPv4 address</h3>
 
 <pre><code>eth0      inet addr:192.168.0.121  Bcast:192.168.0.255  Mask:255.255.255.0
 </code></pre>
 
-<p><code>inet addr:192.168.0.121</code> needs no introduction, it is the 32 bit IPv4 address that
+<p> <code>inet addr:192.168.0.121</code> needs no introduction, it is the 32 bit IPv4 address that
  this interface is using. Wanting to know this address is also probably the most common reason
  for invoking <code>ifconfig</code>.</p>
 
-<p><code>Bcast:192.168.0.255</code> is the broadcast address of the subnetwork the interface is
-on. We get this the broadcast address by masking the IP Address with a bit complement of the network mask <code>Mask:255.255.255.0</code>.</p>
+<p> Modern networking relies on slicing networks
+ into smaller portions using subnetting and Classless
+ Inter-Domain Routing (CIDR).
+ For subnetting to work, we need to understand what part of
+ an IP address is the Network ID and what part is the Host ID. This
+ information is carried in the Network Mask <code>Mask:255.255.255.0</code>.</p>
+
+<p> <code>Bcast:192.168.0.255</code> is the broadcast address of the subnetwork the interface is
+ on. Packets sent to this address will be received by all interfaces
+ on this subnet.<br/>
+ We get this the broadcast address by masking the IP Address with a
+ bit complement of the network mask <code>Mask:255.255.255.0</code> like this &#8211;</p>
+
+<pre><code>Network Mask:           255 . 255 . 255 .   0
+
+Complement all bits:      0 .   0 .   0 . 255
+Original IP address:    192 . 168 .   0 . 121
+                        _____________________
+OR them bitwise:        192 . 168 .   0 . 255
+                        Which is the Broadcast Address
+</code></pre>
 
 <h3>Next, let&#8217;s go over the IPv6 address</h3>
 
@@ -133,8 +157,8 @@ an IP address using DHCP).<br/>
 initialized the interface.<br/>
 <code>MULTICAST</code> tells us that multicasting support is enabled on this
 interface.<br/>
-Since we didn&#8217;t invoke <code>ifconfig</code> with the <code>--all</code> flag, it is only
-going to print out interfaces that are currently <code>UP</code>.</p>
+Since we didn&#8217;t invoke <code>ifconfig</code> with the <code>--all</code> flag, it will only
+print out interfaces that are currently <code>UP</code>.</p>
 
 <p><code>MTU 1500</code> shows that the current <code>Maximum Transmission Unit</code> is set to 1500 bytes, the largest
 allowed over Ethernet. Any IP datagrams larger than 1500 bytes will be
@@ -181,7 +205,7 @@ transmitting packets. This list includes errors due to the
 transmission being aborted, errors due to the carrier, fifo errors,
 heartbeat errors, and window errors. <em>This particular <code>struct</code> in the source code
 isn&#8217;t commented.</em>
-We also have itemized error counts for <code>dropped</code>, <code>overruns</code> and
+We also have itemized error counts for <code>dropped</code>, <code>overruns</code>, and
 <code>carrier</code>.<br/>
 <code>collisions</code> is the number of transmissions terminated due to CSMA/CD
 (Carrier Sense Multiple Access with Collision Detection).</p>
@@ -207,21 +231,21 @@ The value of the <code>txqueuelen</code> can also be set by the <code>ifconfig</
 the <code>eth0</code> device in <code>/proc/interrupts</code>, where the interrupts are counted.</p>
 
 <pre><code>$ cat /proc/interrupts 
-           CPU0       
-  0:        115    XT-PIC-XT-PIC    timer
-  1:       3402    XT-PIC-XT-PIC    i8042
-  2:          0    XT-PIC-XT-PIC    cascade
-  5:          1    XT-PIC-XT-PIC    snd_intel8x0
-  8:          0    XT-PIC-XT-PIC    rtc0
-  9:          0    XT-PIC-XT-PIC    acpi
- 10:      53981    XT-PIC-XT-PIC    eth0
- 11:       1535    XT-PIC-XT-PIC    ohci_hcd:usb1
- 12:        146    XT-PIC-XT-PIC    i8042
- 14:      16923    XT-PIC-XT-PIC    ata_piix
- 15:      10416    XT-PIC-XT-PIC    ata_piix
+               CPU0       
+      0:        115    XT-PIC-XT-PIC    timer
+      1:       3402    XT-PIC-XT-PIC    i8042
+      2:          0    XT-PIC-XT-PIC    cascade
+      5:          1    XT-PIC-XT-PIC    snd_intel8x0
+      8:          0    XT-PIC-XT-PIC    rtc0
+      9:          0    XT-PIC-XT-PIC    acpi
+=&gt;   10:      53981    XT-PIC-XT-PIC    eth0             &lt;=
+     11:       1535    XT-PIC-XT-PIC    ohci_hcd:usb1
+     12:        146    XT-PIC-XT-PIC    i8042
+     14:      16923    XT-PIC-XT-PIC    ata_piix
+     15:      10416    XT-PIC-XT-PIC    ata_piix
 </code></pre>
 
-<p><code>53981</code> is the number of times <code>eth0</code> has interrupted <code>CPU0</code>.<br/>
+<p><code>53981</code> is the number of times the <code>eth0</code> device has interrupted <code>CPU0</code>.<br/>
 The third column tells the name of the programmable interrupt handler,
 and <code>XT-PIC-XT-PIC</code> may be something that my VirtualBox is doing.</p>
 
@@ -297,15 +321,17 @@ The concept of <code>Metric</code> is the same as it was for Ethernet interface 
 function and retain the same definitions from the Ethernet piece
 above. However, errors and collisions have little chance of making an
 appearance here, since there isn&#8217;t a physical medium present.<br/>
-The <code>txqueuelen</code> is set to <code>0</code> by default. It can be change for the
+The <code>txqueuelen</code> is set to <code>0</code> by default. It can be changed for the
 <code>lo</code> device, but I doubt if that would have any effect.</p>
 
 <hr />
 
-<h2>Other ways</h2>
+<h2>Other Tools</h2>
 
 <p>Don&#8217;t like GNU <code>ifconfig</code> or don&#8217;t have it? No problem, there are a few other ways of
-querying a system for similar information.</p>
+querying a system for similar information. <code>netstat -ai</code> and <code>ifconfig</code>  also work on Mac
+OS X, but the output is slightly different since both tools originate
+from the BSD userland.</p>
 
 <p>With <code>iproute2</code> &#8211;</p>
 
@@ -316,7 +342,7 @@ querying a system for similar information.</p>
     67710      812      0       0       0       0      
     TX: bytes  packets  errors  dropped carrier collsns 
     67710      812      0       0       0       0      
-2: eth2: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UNKNOWN mode DEFAULT qlen 1000
+2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UNKNOWN mode DEFAULT qlen 1000
     link/ether 08:00:27:89:cf:84 brd ff:ff:ff:ff:ff:ff
     RX: bytes  packets  errors  dropped overrun mcast   
     10372230   53359    9       0       0       0      
@@ -329,15 +355,13 @@ querying a system for similar information.</p>
 <pre><code>$ netstat --all --interfaces
 Kernel Interface table
 Iface       MTU Met   RX-OK RX-ERR RX-DRP RX-OVR    TX-OK TX-ERR TX-DRP TX-OVR Flg
-eth2       1500 0     56092     10      0 0          3095      0 0      0      BMRU
+eth0       1500 0     56092     10      0 0          3095      0 0      0      BMRU
 lo        16436 0       858      0      0 0           858      0 0      0      LRU
 </code></pre>
 
-<hr />
-
-<h2>This post is still a draft</h2>
-
-<hr />
+<p>The <code>Flg</code> field above shows us the status of the interfaces. <code>BMRU</code>
+stands for Broadcast, Multicast, Running, and Up. <code>LRU</code> stands for
+Loopback, Running, and Up.</p>
 ]]></content>
   </entry>
   
