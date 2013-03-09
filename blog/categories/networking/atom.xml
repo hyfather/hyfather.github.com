@@ -4,7 +4,7 @@
   <title><![CDATA[Category: networking | My Musings]]></title>
   <link href="http://blog.hyfather.com/blog/categories/networking/atom.xml" rel="self"/>
   <link href="http://blog.hyfather.com/"/>
-  <updated>2013-03-09T00:42:45-08:00</updated>
+  <updated>2013-03-09T01:13:41-08:00</updated>
   <id>http://blog.hyfather.com/</id>
   <author>
     <name><![CDATA[Nikhil Mungel]]></name>
@@ -362,6 +362,24 @@ lo        16436 0       858      0      0 0           858      0 0      0      L
 <p>The <code>Flg</code> field above shows us the status of the interfaces. <code>BMRU</code>
 stands for Broadcast, Multicast, Running, and Up. <code>LRU</code> stands for
 Loopback, Running, and Up.</p>
+
+<hr />
+
+<h2>References</h2>
+
+<ol>
+<li>Fall, K. R., &amp; Stevens, W. R. (2011). <em>TCP/IP Illustrated, Volume 1:
+The Protocols</em> (Vol. 1). Addison-Wesley Professional.</li>
+<li>Hunt, C. (2002). <em>TCP/IP network administration</em>. O'Reilly Media,
+Incorporated.</li>
+<li>Kirch, O., &amp; Dawson, T. (2000). <em>Linux network administrator's
+guide</em>. O'Reilly Media, Incorporated.</li>
+<li>Domingo, D. &amp; Bailey, L. (Eds.). (2011). <em>Red Hat Enterprise Linux 6
+Performance Tuning Guide</em>. Red Hat, Incorporated.</li>
+<li>Hinden, R. M., &amp; Deering, S. E. (2003). <em>Internet protocol version 6
+(IPv6) addressing architecture</em>.</li>
+</ol>
+
 ]]></content>
   </entry>
   
