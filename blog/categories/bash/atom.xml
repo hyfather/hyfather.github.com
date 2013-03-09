@@ -4,7 +4,7 @@
   <title><![CDATA[Category: bash | My Musings]]></title>
   <link href="http://blog.hyfather.com/blog/categories/bash/atom.xml" rel="self"/>
   <link href="http://blog.hyfather.com/"/>
-  <updated>2013-03-09T01:13:41-08:00</updated>
+  <updated>2013-03-09T01:37:54-08:00</updated>
   <id>http://blog.hyfather.com/</id>
   <author>
     <name><![CDATA[Nikhil Mungel]]></name>
@@ -368,16 +368,19 @@ Loopback, Running, and Up.</p>
 <h2>References</h2>
 
 <ol>
-<li>Fall, K. R., &amp; Stevens, W. R. (2011). <em>TCP/IP Illustrated, Volume 1:
-The Protocols</em> (Vol. 1). Addison-Wesley Professional.</li>
-<li>Hunt, C. (2002). <em>TCP/IP network administration</em>. O'Reilly Media,
-Incorporated.</li>
-<li>Kirch, O., &amp; Dawson, T. (2000). <em>Linux network administrator's
-guide</em>. O'Reilly Media, Incorporated.</li>
+<li>Cotton, M., &amp; Vegoda, L. (2010). <em>Special Use IPv4 Addresses</em>. Internet Engineering Taskforce RFC 5735.</li>
 <li>Domingo, D. &amp; Bailey, L. (Eds.). (2011). <em>Red Hat Enterprise Linux 6
 Performance Tuning Guide</em>. Red Hat, Incorporated.</li>
+<li>Fall, K. R., &amp; Stevens, W. R. (2011). <em>TCP/IP Illustrated, Volume 1:
+The Protocols</em> (Vol. 1). Addison-Wesley Professional.</li>
 <li>Hinden, R. M., &amp; Deering, S. E. (2003). <em>Internet protocol version 6
-(IPv6) addressing architecture</em>.</li>
+(IPv6) addressing architecture</em>. Internet Engineering Taskforce RFC 3513.</li>
+<li>Hunt, C. (2002). <em>TCP/IP network administration</em>. O'Reilly Media,
+Incorporated.</li>
+<li>Kempen, F., Cox, A., Blundell, P., Kleen, A., Eckenfels,
+B. (2007). <em>ifconfig(8) Manual Page</em>.</li>
+<li>Kirch, O., &amp; Dawson, T. (2000). <em>Linux network administrator's
+guide</em>. O'Reilly Media, Incorporated.</li>
 </ol>
 
 ]]></content>
