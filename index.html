@@ -11,9 +11,8 @@
   <meta name="author" content="Nikhil Mungel">
 
   
-  <meta name="description" content="ifconfig is a systems administration utility for UNIX-like systems
-that allows for diagnosing and configuring network
-interfaces. Although some claim &hellip;">
+  <meta name="description" content="This is actually very unlike a man page. It assumes that you know very little about
+TCP/IP networking. It also deals with only the parameter-less &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -109,22 +108,34 @@ interfaces. Although some claim &hellip;">
   </header>
 
 
-  <div class="entry-content"><p><code>ifconfig</code> is a systems administration utility for UNIX-like systems
+  <div class="entry-content"><p>This is actually very unlike a man page. It assumes that you know very little about
+TCP/IP networking. It also deals with only the parameter-less
+invocation of <code>ifconfig</code>, since other invocations are well documented
+in the real man page.<br/>
+You can read the sections independently of one another, skipping what
+you already know. In this regard, it is quite like a man page.</p>
+
+<h2>What is ifconfig?</h2>
+
+<p><code>ifconfig</code> is a systems administration utility for UNIX-like systems
 that allows for diagnosing and configuring network
 interfaces. Although some claim that it is being replaced with <code>iproute2</code> (or simply the <code>ip</code> command), I
 have seen it being used abundantly.<br/>
-Using <code>ifconfig</code> to bring up interfaces, turn them off, and configure
-the protocols and identifiers they use is well documented in the man
-pages.<br/>
-But <code>ifconfig</code> also prints out a wealth of information if invoked
+You can using <code>ifconfig</code> to bring up interfaces, turn them off, and configure
+the protocols and identifiers they use.</p>
+
+<h3>Why document it?</h3>
+
+<p><code>ifconfig</code> prints out a wealth of information if invoked
 without any parameters and options. I simply could not find the
-definitions of most of these things in the man pages and what follows
+definitions of most of these things and what follows
 is my attempt at documenting these exhaustively.</p>
+
+<hr />
 
 <p>This is what we see when we invoke GNU <code>ifconfig</code> on a virtual host running
 Ubuntu. Note the absence of a wifi interface, as is the case with most
-servers.<br/>
-<em>The sections are written so that they can be read independently of one another.</em></p>
+servers.</p>
 
 <pre><code>$ ifconfig
 eth0      Link encap:Ethernet  HWaddr 08:00:27:0c:49:47  
@@ -149,7 +160,7 @@ lo        Link encap:Local Loopback
 
 <hr />
 
-<h2>Ethernet</h2>
+<h2>The Ethernet Interface</h2>
 
 <pre><code>eth0      Link encap:Ethernet  HWaddr 08:00:27:0c:49:47  
 </code></pre>
@@ -196,6 +207,10 @@ OR them bitwise:        192 . 168 .   0 . 255
 </code></pre>
 
 <h3>Next, let&#8217;s go over the IPv6 address</h3>
+
+<p>I never paid much attention to IPv6 addresses in the past. However, it
+isn&#8217;t too complicated to get to the bottom of it. Your local IPv6
+addresses are essentially based on the MAC address of the interface.</p>
 
 <pre><code>eth0      inet6 addr: fe80::a00:27ff:fe0c:4947/64 Scope:Link
 </code></pre>
@@ -295,7 +310,7 @@ that the kernel being able to handle IO.
 transmitting packets. This list includes errors due to the
 transmission being aborted, errors due to the carrier, fifo errors,
 heartbeat errors, and window errors. <em>This particular <code>struct</code> in the source code
-isn&#8217;t commented.</em>
+isn&#8217;t commented.</em><br/>
 We also have itemized error counts for <code>dropped</code>, <code>overruns</code>, and
 <code>carrier</code>.<br/>
 <code>collisions</code> is the number of transmissions terminated due to CSMA/CD
@@ -342,7 +357,7 @@ and <code>XT-PIC-XT-PIC</code> may be something that my VirtualBox is doing.</p>
 
 <hr />
 
-<h2>The Loopback</h2>
+<h2>The Loopback Interface</h2>
 
 <pre><code>lo        Link encap:Local Loopback  
           inet addr:127.0.0.1  Mask:255.0.0.0
