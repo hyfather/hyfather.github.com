@@ -37,16 +37,22 @@
         <lastmod>2013-03-12T21:41:50-07:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://blog.hyfather.com/blog/2013/04/18/ssh-uses-four-tcp-segments-for-each-character/
+        </loc>
+        <lastmod>2013-05-26T17:25:15-07:00</lastmod>
+    </url>
+    <url>
         <loc>http://blog.hyfather.com/about/</loc>
         <lastmod>2013-03-09T21:41:23-08:00</lastmod>
     </url>
     <url>
         <loc>http://blog.hyfather.com/blog/archives/</loc>
-        <lastmod>2013-03-12T21:41:50-07:00</lastmod>
+        <lastmod>2013-05-26T17:25:15-07:00</lastmod>
     </url>
     <url>
         <loc>http://blog.hyfather.com/</loc>
-        <lastmod>2013-03-12T21:41:50-07:00</lastmod>
+        <lastmod>2013-05-26T17:25:15-07:00</lastmod>
     </url>
     <url>
         <loc>http://blog.hyfather.com/robots.txt</loc>

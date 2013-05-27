@@ -4,7 +4,7 @@
   <title><![CDATA[My Musings]]></title>
   <link href="http://blog.hyfather.com/atom.xml" rel="self"/>
   <link href="http://blog.hyfather.com/"/>
-  <updated>2013-03-12T21:42:23-07:00</updated>
+  <updated>2013-05-26T17:41:45-07:00</updated>
   <id>http://blog.hyfather.com/</id>
   <author>
     <name><![CDATA[Nikhil Mungel]]></name>
@@ -12,6 +12,91 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[SSH uses four TCP segments for each character you type]]></title>
+    <link href="http://blog.hyfather.com/blog/2013/04/18/ssh-uses-four-tcp-segments-for-each-character/"/>
+    <updated>2013-04-18T23:38:00-07:00</updated>
+    <id>http://blog.hyfather.com/blog/2013/04/18/ssh-uses-four-tcp-segments-for-each-character</id>
+    <content type="html"><![CDATA[<p>Everytime we press a key in an <em>interactive</em> SSH session, the SSH Client
+sends that keystroke as a TCP segment to the SSH Server. Here is a
+Wireshark capture of I having SSH-ed into my own machine and pressing
+a <em>single key</em>. I have not included packets indicating the setup and
+teardown of the TCP and SSH connections.</p>
+
+<p><img src="http://blog.hyfather.com/images/ssh4packets.png">
+<em>You can differentiate between the client and server from the
+source and destination port numbers. SSH servers usually work on port 22.</em></p>
+
+<p>After the client has transmitted a character over a TCP segment, the
+server acknowledges that it has received it. Acknowledgements of data
+enable TCP to provide a reliable transport service to higher level
+protocols like HTTP, SMTP and SSH.</p>
+
+<p>After this, the server actually processs the character by sending it
+to the program, which is typically <code>bash</code>, but could be anything &#8211;
+<code>sh</code>, <code>zsh</code> or even <code>emacs</code>. The shell will interpret the character
+and send back the result over another TCP segment. This enables the
+client to <em>echo</em> the character on the screen and send back an
+acknowledgement to the server.</p>
+
+<p>I have depicted this in a timeline &#8211;</p>
+
+<p><img src="http://blog.hyfather.com/images/sshtimeline.png" title="" ></p>
+
+<h2>I tried this out and I can see only three segments per character I type</h2>
+
+<p>To be minimal about the traffic that sending acknowledgements for data
+causes, TCP piggybacks ACKs on data that it has to send anyway. This
+is implementation specific, though if you were using the socket API,
+you&#8217;d set the TCP_QUICKACK option to disable delayed acknowlegments.</p>
+
+<p>Here is an example of this happening when I SSH-ed into an AWS EC2
+server.</p>
+
+<p><img src="http://blog.hyfather.com/images/ssh3packets.png">
+<em>Note that the server is sending the ACK to the character it received
+and the response together in one TCP segment.</em></p>
+
+<h2>Why not send whole commands?</h2>
+
+<p>One may wonder why does SSH not transmit every command or every line
+rather than sending individual characters. The
+answer lies in the fact that the program on the server may
+have commands that are only a character long, without requiring a
+newline character. Think ESC in
+<code>vi</code>, or M-x in <code>emacs</code>, or SPACE in <code>more</code>. Even while sending
+commands to <code>bash</code>, there could be readline-specific keystrokes like
+C-e or C-a or even TAB that need to be sent as they are pressed
+instead of waiting for a newline.
+So, SSH chooses not to try to understand what sequence of characters
+constitute a command and simply sends across characters as they are
+typed. In fact, it doesn&#8217;t even assume if and how the character
+pressed will echo on the screen, it finds it out from the server program.</p>
+
+<h2>What happens when I use SSH with other software like git?</h2>
+
+<p>One the most frequent ways that I use SSH is when I do any remote
+<code>git</code> operations like <code>pull</code>, <code>push</code>, or <code>clone</code>. When actual data is
+being sent, the SSH software understands that it isn&#8217;t an interactive
+invocation and TCP utilizes all the available capacity of a each
+segment to help SSH send all that data.</p>
+
+<p>Deciding the sizes of segments is left to TCP and would warrant a blog
+post by itself, but here is a quick primer &#8211; The Maximum Segment Size (MSS) that TCP calculates
+is such that there will be no IP layer fragmentation of segments. In
+other words, TCP sets its MSS lesser than or equal to the Path MTU (Maximum
+Transmission Unit). TCP also sets the Don&#8217;t Fragment (DF) Flag to
+ensure that Segments don&#8217;t get fragmented on the IP.</p>
+
+<p>Here is a capture of Wireshark sniffing data when I cloned a
+repository from GitHub over SSH.</p>
+
+<p><img src="http://blog.hyfather.com/images/sshbulkdata.png">
+<em>Note how the data in each segement plus the TCP and IP headers equal
+the exact MTU of my Ethernet interface &#8211; 1500</em></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[The Missing Man Page for ifconfig]]></title>

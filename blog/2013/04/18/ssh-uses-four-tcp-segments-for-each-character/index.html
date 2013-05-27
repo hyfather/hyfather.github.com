@@ -7,11 +7,13 @@
   <meta charset="utf-8">
   <title>Nikhil Mungel</title>
 
-  <!-- XON and XOFF - My Musings -->
+  <!-- SSH uses four TCP segments for each character you type - My Musings -->
   <meta name="author" content="Nikhil Mungel">
 
   
-  <meta name="description" content="It started with SSH sessions to the Bangalore data center freezeing up sporadically. It wasn&#8217;t all that sporadic, a pattern was noticed soon &hellip;">
+  <meta name="description" content="Everytime we press a key in an interactive SSH session, the SSH Client
+sends that keystroke as a TCP segment to the SSH Server. Here is a
+Wireshark &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +22,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://blog.hyfather.com/blog/2011/10/07/xon-and-xoff/">
+  <link rel="canonical" href="http://blog.hyfather.com/blog/2013/04/18/ssh-uses-four-tcp-segments-for-each-character/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -81,7 +83,7 @@
   
   <header>
     
-      <h1 class="entry-title">XON and XOFF</h1>
+      <h1 class="entry-title">SSH uses four TCP segments for each character you type</h1>
     
     
       <p class="meta">
@@ -97,41 +99,90 @@
   
 
 
-<time datetime="2011-10-07T12:39:00-07:00" pubdate data-updated="true">Oct 7<span>th</span>, 2011</time>
+<time datetime="2013-04-18T23:38:00-07:00" pubdate data-updated="true">Apr 18<span>th</span>, 2013</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><h3>It started with SSH sessions to the Bangalore data center freezeing up sporadically.</h3>
+<div class="entry-content"><p>Everytime we press a key in an <em>interactive</em> SSH session, the SSH Client
+sends that keystroke as a TCP segment to the SSH Server. Here is a
+Wireshark capture of I having SSH-ed into my own machine and pressing
+a <em>single key</em>. I have not included packets indicating the setup and
+teardown of the TCP and SSH connections.</p>
 
-<p>It wasn&#8217;t all that sporadic, a pattern was noticed soon enough &#8211; a
-harmless <code>C-x C-s</code> issued when inside vi.</p>
+<p><img src="/images/ssh4packets.png">
+<em>You can differentiate between the client and server from the
+source and destination port numbers. SSH servers usually work on port 22.</em></p>
 
-<p>Unfortunately, most distros do not come bundled with emacs and I have to resort to botching up and fumbling with vi (or vim) to edit a few configurations now and then.
-Everytime I&#8217;d tweak an LXC configuration with vim and hit <code>C-x C-s</code> on the unsuspecting editor, things would freeze up. It&#8217;d refuse to respond to even the widely respected un-interceptability of the <code>^Z</code>.
-Since I use a multiplexed SSH control-master, I&#8217;d waste no time opening another SSH to the obstinate host in a different tab and mind my business.</p>
+<p>After the client has transmitted a character over a TCP segment, the
+server acknowledges that it has received it. Acknowledgements of data
+enable TCP to provide a reliable transport service to higher level
+protocols like HTTP, SMTP and SSH.</p>
 
-<p>Till I learned about <a href="http://en.wikipedia.org/w/index.php?title=Software_flow_control&amp;oldid=442424622" title="flow control">flow control</a>.</p>
+<p>After this, the server actually processs the character by sending it
+to the program, which is typically <code>bash</code>, but could be anything &#8211;
+<code>sh</code>, <code>zsh</code> or even <code>emacs</code>. The shell will interpret the character
+and send back the result over another TCP segment. This enables the
+client to <em>echo</em> the character on the screen and send back an
+acknowledgement to the server.</p>
 
-<h3>What is software flow control?</h3>
+<p>I have depicted this in a timeline &#8211;</p>
 
-<p>Software Flow Control enables communication links to be started or
-stopped using the primary communication channel, which in this case
-was the ssh tunnel.
-XON and XOFF dictate the status of the data-link transmission to the
-tty <em>(X stands for transmission)</em>.</p>
+<p><img src="/images/sshtimeline.png" title="" ></p>
 
-<p>XOFF is mapped to <code>C-s</code> by default, which causes the SSH session to not receive any signals.</p>
+<h2>I tried this out and I can see only three segments per character I type</h2>
 
-<p>It can be promptly remedied by an XON (mapped to <code>C-q</code> by default) to resume the transmission.</p>
+<p>To be minimal about the traffic that sending acknowledgements for data
+causes, TCP piggybacks ACKs on data that it has to send anyway. This
+is implementation specific, though if you were using the socket API,
+you&#8217;d set the TCP_QUICKACK option to disable delayed acknowlegments.</p>
 
-<p>Emacs by default intercepts all <code>C-</code> sequences and hence does not exhibit this behaviour.</p>
+<p>Here is an example of this happening when I SSH-ed into an AWS EC2
+server.</p>
 
-<p><strong>TL;DR</strong>
-SSH freezes up, &#8216;hangs&#8217; or stops responding when you hit <code>C-s</code>?
-Use <code>C-q</code> to resume it.</p>
+<p><img src="/images/ssh3packets.png">
+<em>Note that the server is sending the ACK to the character it received
+and the response together in one TCP segment.</em></p>
+
+<h2>Why not send whole commands?</h2>
+
+<p>One may wonder why does SSH not transmit every command or every line
+rather than sending individual characters. The
+answer lies in the fact that the program on the server may
+have commands that are only a character long, without requiring a
+newline character. Think ESC in
+<code>vi</code>, or M-x in <code>emacs</code>, or SPACE in <code>more</code>. Even while sending
+commands to <code>bash</code>, there could be readline-specific keystrokes like
+C-e or C-a or even TAB that need to be sent as they are pressed
+instead of waiting for a newline.
+So, SSH chooses not to try to understand what sequence of characters
+constitute a command and simply sends across characters as they are
+typed. In fact, it doesn&#8217;t even assume if and how the character
+pressed will echo on the screen, it finds it out from the server program.</p>
+
+<h2>What happens when I use SSH with other software like git?</h2>
+
+<p>One the most frequent ways that I use SSH is when I do any remote
+<code>git</code> operations like <code>pull</code>, <code>push</code>, or <code>clone</code>. When actual data is
+being sent, the SSH software understands that it isn&#8217;t an interactive
+invocation and TCP utilizes all the available capacity of a each
+segment to help SSH send all that data.</p>
+
+<p>Deciding the sizes of segments is left to TCP and would warrant a blog
+post by itself, but here is a quick primer &#8211; The Maximum Segment Size (MSS) that TCP calculates
+is such that there will be no IP layer fragmentation of segments. In
+other words, TCP sets its MSS lesser than or equal to the Path MTU (Maximum
+Transmission Unit). TCP also sets the Don&#8217;t Fragment (DF) Flag to
+ensure that Segments don&#8217;t get fragmented on the IP.</p>
+
+<p>Here is a capture of Wireshark sniffing data when I cloned a
+repository from GitHub over SSH.</p>
+
+<p><img src="/images/sshbulkdata.png">
+<em>Note how the data in each segement plus the TCP and IP headers equal
+the exact MTU of my Ethernet interface &#8211; 1500</em></p>
 </div>
 
 
@@ -154,21 +205,15 @@ Use <code>C-q</code> to resume it.</p>
   
 
 
-<time datetime="2011-10-07T12:39:00-07:00" pubdate data-updated="true">Oct 7<span>th</span>, 2011</time>
+<time datetime="2013-04-18T23:38:00-07:00" pubdate data-updated="true">Apr 18<span>th</span>, 2013</time>
       
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/bash/'>bash</a>, <a class='category' href='/blog/categories/emacs/'>emacs</a>, <a class='category' href='/blog/categories/signals/'>signals</a>, <a class='category' href='/blog/categories/ssh/'>ssh</a>, <a class='category' href='/blog/categories/vi/'>vi</a>, <a class='category' href='/blog/categories/vim/'>vim</a>
-  
-</span>
 
 
     </p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://blog.hyfather.com/blog/2011/10/07/xon-and-xoff/" data-via="hyfather" data-counturl="http://blog.hyfather.com/blog/2011/10/07/xon-and-xoff/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://blog.hyfather.com/blog/2013/04/18/ssh-uses-four-tcp-segments-for-each-character/" data-via="hyfather" data-counturl="http://blog.hyfather.com/blog/2013/04/18/ssh-uses-four-tcp-segments-for-each-character/" >Tweet</a>
   
   
   
@@ -177,10 +222,8 @@ Use <code>C-q</code> to resume it.</p>
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2011/09/01/devops-at-chicagoruby/" title="Previous Post: DevOps at ChicagoRuby">&laquo; DevOps at ChicagoRuby</a>
+        <a class="basic-alignment left" href="/blog/2013/03/04/ifconfig/" title="Previous Post: The Missing Man Page for ifconfig">&laquo; The Missing Man Page for ifconfig</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2011/10/18/bundler/" title="Next Post: Bundler and RVM">Bundler and RVM &raquo;</a>
       
     </p>
   </footer>
@@ -291,8 +334,8 @@ Use <code>C-q</code> to resume it.</p>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://blog.hyfather.com/blog/2011/10/07/xon-and-xoff/';
-        var disqus_url = 'http://blog.hyfather.com/blog/2011/10/07/xon-and-xoff/';
+        var disqus_identifier = 'http://blog.hyfather.com/blog/2013/04/18/ssh-uses-four-tcp-segments-for-each-character/';
+        var disqus_url = 'http://blog.hyfather.com/blog/2013/04/18/ssh-uses-four-tcp-segments-for-each-character/';
         var disqus_script = 'embed.js';
       
     (function () {
