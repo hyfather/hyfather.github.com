@@ -5,13 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Nikhil Mungel</title>
-
-  <!-- My Musings -->
+  <title>My Musings</title>
   <meta name="author" content="Nikhil Mungel">
 
   
-  <meta name="description" content="Everytime we press a key in an interactive SSH session, the SSH Client
+  <meta name="description" content="Every time we press a key in an interactive SSH session, the SSH Client
 sends that keystroke as a TCP segment to the SSH Server. Here is a
 Wireshark &hellip;">
   
@@ -71,8 +69,8 @@ Wireshark &hellip;">
 </form>
   
 <ul class="main-navigation">
-  <li><a href="/about">About</a></li>
-  <li><a href="/blog/archives">Blog Archives</a></li>
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
 </ul>
 
 </nav>
@@ -109,7 +107,7 @@ Wireshark &hellip;">
   </header>
 
 
-  <div class="entry-content"><p>Everytime we press a key in an <em>interactive</em> SSH session, the SSH Client
+  <div class="entry-content"><p>Every time we press a key in an <em>interactive</em> SSH session, the SSH Client
 sends that keystroke as a TCP segment to the SSH Server. Here is a
 Wireshark capture of I having SSH-ed into my own machine and pressing
 a <em>single key</em>. I have not included packets indicating the setup and
@@ -124,7 +122,7 @@ server acknowledges that it has received it. Acknowledgements of data
 enable TCP to provide a reliable transport service to higher level
 protocols like HTTP, SMTP and SSH.</p>
 
-<p>After this, the server actually processs the character by sending it
+<p>After this, the server actually processes the character by sending it
 to the program, which is typically <code>bash</code>, but could be anything &#8211;
 <code>sh</code>, <code>zsh</code> or even <code>emacs</code>. The shell will interpret the character
 and send back the result over another TCP segment. This enables the
@@ -140,7 +138,8 @@ acknowledgement to the server.</p>
 <p>To be minimal about the traffic that sending acknowledgements for data
 causes, TCP piggybacks ACKs on data that it has to send anyway. This
 is implementation specific, though if you were using the socket API,
-you&#8217;d set the TCP_QUICKACK option to disable delayed acknowlegments.</p>
+you&#8217;d play around with the <code>TCP_NODELAY</code> (also called the Nagle
+Algorithm) and the <code>TCP_QUICKACK</code> options to reduce or disable delayed acknowledgments.</p>
 
 <p>Here is an example of this happening when I SSH-ed into an AWS EC2
 server.</p>
@@ -184,8 +183,13 @@ ensure that Segments don&#8217;t get fragmented on the IP.</p>
 repository from GitHub over SSH.</p>
 
 <p><img src="/images/sshbulkdata.png">
-<em>Note how the data in each segement plus the TCP and IP headers equal
+<em>Note how the data in each segment plus the TCP and IP headers equal
 the exact MTU of my Ethernet interface &#8211; 1500</em></p>
+
+<hr />
+
+<p><em>Nikhil Mungel writes blogs on networking, ruby and GNU/Linux. If
+you&#8217;d like to see more, follow him on <a href="http://www.twitter.com/hyfather">twitter.com/hyfather</a></em></p>
 </div>
   
   
@@ -1179,9 +1183,7 @@ REPL).</p>
   </div>
   <footer role="contentinfo"><p>
   Copyright &copy; 2013 - Nikhil Mungel -
-  <span class="credit">Powered
-    by <a href="http://octopress.org" target="_blank">Octopress</a> and hosted
-    on <a href="https://help.github.com/categories/20/articles" target="_blank">GitHub Pages</a>.</span>
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
 </footer>

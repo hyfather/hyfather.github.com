@@ -2,60 +2,60 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://blog.hyfather.com/blog/2011/08/26/time-saving-bash-tricks/</loc>
-        <lastmod>2013-03-03T23:19:05-08:00</lastmod>
+        <lastmod>2013-05-26T21:20:43-07:00</lastmod>
     </url>
     <url>
         <loc>
             http://blog.hyfather.com/blog/2011/08/28/deployment-patterns-in-the-ruby-on-rails-world/
         </loc>
-        <lastmod>2013-03-03T23:19:05-08:00</lastmod>
+        <lastmod>2013-05-26T21:20:43-07:00</lastmod>
     </url>
     <url>
         <loc>http://blog.hyfather.com/blog/2011/09/01/devops-at-chicagoruby/</loc>
-        <lastmod>2013-03-03T23:19:05-08:00</lastmod>
+        <lastmod>2013-05-26T21:20:43-07:00</lastmod>
     </url>
     <url>
         <loc>http://blog.hyfather.com/blog/2011/10/07/xon-and-xoff/</loc>
-        <lastmod>2013-03-03T23:19:05-08:00</lastmod>
+        <lastmod>2013-05-26T21:20:43-07:00</lastmod>
     </url>
     <url>
         <loc>http://blog.hyfather.com/blog/2011/10/18/bundler/</loc>
-        <lastmod>2013-03-03T23:19:05-08:00</lastmod>
+        <lastmod>2013-05-26T21:20:43-07:00</lastmod>
     </url>
     <url>
         <loc>http://blog.hyfather.com/blog/2011/12/17/restricted-bash/</loc>
-        <lastmod>2013-03-03T23:19:05-08:00</lastmod>
+        <lastmod>2013-05-26T21:20:43-07:00</lastmod>
     </url>
     <url>
         <loc>
             http://blog.hyfather.com/blog/2012/09/20/crafting-beautiful-command-line-applications-with-ruby/
         </loc>
-        <lastmod>2013-03-03T23:19:05-08:00</lastmod>
+        <lastmod>2013-05-26T21:20:43-07:00</lastmod>
     </url>
     <url>
         <loc>http://blog.hyfather.com/blog/2013/03/04/ifconfig/</loc>
-        <lastmod>2013-03-12T21:41:50-07:00</lastmod>
+        <lastmod>2013-05-26T21:20:43-07:00</lastmod>
     </url>
     <url>
         <loc>
             http://blog.hyfather.com/blog/2013/04/18/ssh-uses-four-tcp-segments-for-each-character/
         </loc>
-        <lastmod>2013-05-26T17:25:15-07:00</lastmod>
+        <lastmod>2013-05-29T20:53:43-07:00</lastmod>
     </url>
     <url>
         <loc>http://blog.hyfather.com/about/</loc>
-        <lastmod>2013-03-09T21:41:23-08:00</lastmod>
+        <lastmod>2013-05-26T21:20:43-07:00</lastmod>
     </url>
     <url>
         <loc>http://blog.hyfather.com/blog/archives/</loc>
-        <lastmod>2013-05-26T17:25:15-07:00</lastmod>
+        <lastmod>2013-05-29T20:53:43-07:00</lastmod>
     </url>
     <url>
         <loc>http://blog.hyfather.com/</loc>
-        <lastmod>2013-05-26T17:25:15-07:00</lastmod>
+        <lastmod>2013-05-29T20:53:43-07:00</lastmod>
     </url>
     <url>
         <loc>http://blog.hyfather.com/robots.txt</loc>
-        <lastmod>2013-03-03T22:32:27-08:00</lastmod>
+        <lastmod>2013-05-26T21:20:43-07:00</lastmod>
     </url>
 </urlset>

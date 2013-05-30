@@ -4,7 +4,7 @@
   <title><![CDATA[My Musings]]></title>
   <link href="http://blog.hyfather.com/atom.xml" rel="self"/>
   <link href="http://blog.hyfather.com/"/>
-  <updated>2013-05-26T17:41:45-07:00</updated>
+  <updated>2013-05-29T20:54:38-07:00</updated>
   <id>http://blog.hyfather.com/</id>
   <author>
     <name><![CDATA[Nikhil Mungel]]></name>
@@ -18,7 +18,7 @@
     <link href="http://blog.hyfather.com/blog/2013/04/18/ssh-uses-four-tcp-segments-for-each-character/"/>
     <updated>2013-04-18T23:38:00-07:00</updated>
     <id>http://blog.hyfather.com/blog/2013/04/18/ssh-uses-four-tcp-segments-for-each-character</id>
-    <content type="html"><![CDATA[<p>Everytime we press a key in an <em>interactive</em> SSH session, the SSH Client
+    <content type="html"><![CDATA[<p>Every time we press a key in an <em>interactive</em> SSH session, the SSH Client
 sends that keystroke as a TCP segment to the SSH Server. Here is a
 Wireshark capture of I having SSH-ed into my own machine and pressing
 a <em>single key</em>. I have not included packets indicating the setup and
@@ -33,7 +33,7 @@ server acknowledges that it has received it. Acknowledgements of data
 enable TCP to provide a reliable transport service to higher level
 protocols like HTTP, SMTP and SSH.</p>
 
-<p>After this, the server actually processs the character by sending it
+<p>After this, the server actually processes the character by sending it
 to the program, which is typically <code>bash</code>, but could be anything &#8211;
 <code>sh</code>, <code>zsh</code> or even <code>emacs</code>. The shell will interpret the character
 and send back the result over another TCP segment. This enables the
@@ -49,7 +49,8 @@ acknowledgement to the server.</p>
 <p>To be minimal about the traffic that sending acknowledgements for data
 causes, TCP piggybacks ACKs on data that it has to send anyway. This
 is implementation specific, though if you were using the socket API,
-you&#8217;d set the TCP_QUICKACK option to disable delayed acknowlegments.</p>
+you&#8217;d play around with the <code>TCP_NODELAY</code> (also called the Nagle
+Algorithm) and the <code>TCP_QUICKACK</code> options to reduce or disable delayed acknowledgments.</p>
 
 <p>Here is an example of this happening when I SSH-ed into an AWS EC2
 server.</p>
@@ -93,8 +94,13 @@ ensure that Segments don&#8217;t get fragmented on the IP.</p>
 repository from GitHub over SSH.</p>
 
 <p><img src="http://blog.hyfather.com/images/sshbulkdata.png">
-<em>Note how the data in each segement plus the TCP and IP headers equal
+<em>Note how the data in each segment plus the TCP and IP headers equal
 the exact MTU of my Ethernet interface &#8211; 1500</em></p>
+
+<hr />
+
+<p><em>Nikhil Mungel writes blogs on networking, ruby and GNU/Linux. If
+you&#8217;d like to see more, follow him on <a href="http://www.twitter.com/hyfather">twitter.com/hyfather</a></em></p>
 ]]></content>
   </entry>
   
