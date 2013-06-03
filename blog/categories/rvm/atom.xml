@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: rvm | My Musings]]></title>
+  <title><![CDATA[Category: rvm | Nikhil Mungel]]></title>
   <link href="http://blog.hyfather.com/blog/categories/rvm/atom.xml" rel="self"/>
   <link href="http://blog.hyfather.com/"/>
-  <updated>2013-05-30T09:22:18-07:00</updated>
+  <updated>2013-06-02T19:48:56-07:00</updated>
   <id>http://blog.hyfather.com/</id>
   <author>
     <name><![CDATA[Nikhil Mungel]]></name>
@@ -25,6 +25,9 @@ And <em>everyone</em> I know uses RVM to manage their rubies and their gems loca
 Bundler calles them <em>bundles</em> and RVM calles them <em>gemsets</em>.</p>
 
 <p>Broadly, here are two patterns.</p>
+
+<!-- more -->
+
 
 <h3>Pattern #1</h3>
 

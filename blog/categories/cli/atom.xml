@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: cli | My Musings]]></title>
+  <title><![CDATA[Category: cli | Nikhil Mungel]]></title>
   <link href="http://blog.hyfather.com/blog/categories/cli/atom.xml" rel="self"/>
   <link href="http://blog.hyfather.com/"/>
-  <updated>2013-05-30T09:22:18-07:00</updated>
+  <updated>2013-06-02T19:48:56-07:00</updated>
   <id>http://blog.hyfather.com/</id>
   <author>
     <name><![CDATA[Nikhil Mungel]]></name>
@@ -30,6 +30,11 @@ Francisco. I condensed the
 <a href="http://slidesha.re/rubycli" title="View the slideshow at slideshare.net">full-format presentation</a>
 from earlier this year into this crisp 10 minute talk that I've embedded here --</p>
 
+<!-- more -->
+
+
+
+
 <iframe src="http://www.slideshare.net/slideshow/embed_code/14362934"
 width="427" height="356" frameborder="0" marginwidth="0"
 marginheight="0" scrolling="no" style="border:1px solid
@@ -54,6 +59,9 @@ Tricks</strong> that I gave at DevOpsDays, Bangalore 2011.</p>
 <p>Adding these to <code>~/.ssh/config</code> or <code>/etc/ssh_config</code> will allow you to
 multiplex one SSH connection to open multiple terminals, multiple
 <code>scp</code> and <code>git push</code> without having to authenticate over keys or passwords.</p>
+
+<!-- more -->
+
 
 <pre><code>Host \*
 ControlMaster auto

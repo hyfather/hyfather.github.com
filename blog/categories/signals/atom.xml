@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: signals | My Musings]]></title>
+  <title><![CDATA[Category: signals | Nikhil Mungel]]></title>
   <link href="http://blog.hyfather.com/blog/categories/signals/atom.xml" rel="self"/>
   <link href="http://blog.hyfather.com/"/>
-  <updated>2013-05-30T09:22:18-07:00</updated>
+  <updated>2013-06-02T19:48:56-07:00</updated>
   <id>http://blog.hyfather.com/</id>
   <author>
     <name><![CDATA[Nikhil Mungel]]></name>
@@ -26,6 +26,9 @@ harmless <code>C-x C-s</code> issued when inside vi.</p>
 <p>Unfortunately, most distros do not come bundled with emacs and I have to resort to botching up and fumbling with vi (or vim) to edit a few configurations now and then.
 Everytime I'd tweak an LXC configuration with vim and hit <code>C-x C-s</code> on the unsuspecting editor, things would freeze up. It'd refuse to respond to even the widely respected un-interceptability of the <code>^Z</code>.
 Since I use a multiplexed SSH control-master, I'd waste no time opening another SSH to the obstinate host in a different tab and mind my business.</p>
+
+<!-- more -->
+
 
 <p>Till I learned about <a href="http://en.wikipedia.org/w/index.php?title=Software_flow_control&amp;oldid=442424622" title="flow control">flow control</a>.</p>
 

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: devops | My Musings]]></title>
+  <title><![CDATA[Category: devops | Nikhil Mungel]]></title>
   <link href="http://blog.hyfather.com/blog/categories/devops/atom.xml" rel="self"/>
   <link href="http://blog.hyfather.com/"/>
-  <updated>2013-05-30T09:22:18-07:00</updated>
+  <updated>2013-06-02T19:48:56-07:00</updated>
   <id>http://blog.hyfather.com/</id>
   <author>
     <name><![CDATA[Nikhil Mungel]]></name>
@@ -28,6 +28,9 @@ different environments should be configured and managed.</p>
 Ruby on Rails applications centered around Continuous Integration that have enabled us to deploy extremely fast.</p>
 
 <p>Chris Breeze is a colleague who works out of the Chicago office, he is also the man behind <a href="http://www.chicagocarp.com/">Chicago Carp</a>.</p>
+
+<!-- more -->
+
 
 <h3>Here is the Prezi, use your arrow keys to navigate through it --</h3>
 
@@ -61,6 +64,11 @@ packing tools that can enable an application to scale very rapidly if
 you use Chef or Puppet.</p>
 
 <p>We presented this at DevOpsDays Bangalore 2011.</p>
+
+<!-- more -->
+
+
+
 
 <iframe scrolling="no" marginheight="0" marginwidth="0"
 src="http://www.slideshare.net/slideshow/embed_code/9047887"
